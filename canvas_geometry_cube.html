@@ -28,7 +28,7 @@
 
 			var camera, scene, renderer;
 
-			var cube, petitCube,petitCube4, plane;
+			var petitCube;
 
 			var targetRotation = 0;
 			var targetRotationOnMouseDown = 0;
@@ -62,35 +62,16 @@
 				camera.position.x = 0;
 
 				scene = new THREE.Scene();
-				// scene.center(100);
                 subScene = new THREE.Scene();
 				scene.background = new THREE.Color( 0xf0f0f0 );
 
                 subScene.position.y = 10;
 
-                scene.add(subScene);
+
 
                 addNbrImageBySize(subScene, 4);
-                // scene.position.x= -300;
 
-                //TODO: creation d'une image = ok
-                // var objTo = document.getElementById('maDiv');
-                // var x = document.createElement("img");
-                // x.setAttribute("src", "./img/Env-Virt-KTD/IMG_2644.JPG");
-                // x.setAttribute("width", "100");
-                // x.setAttribute("height", "100");
-                // objTo.appendChild(x);
-
-
-                /********/
-				// Plane
-
-				// var geometry = new THREE.PlaneBufferGeometry( 200, 200 );
-				// geometry.rotateX( - Math.PI / 2 );
-
-				var material = new THREE.MeshBasicMaterial( { color: 0xe0e0e0, overdraw: 0.5 } );
-
-				// plane = new THREE.Mesh( geometry, material );
+                scene.add(subScene);
 
 				renderer = new THREE.CanvasRenderer();
 				renderer.setPixelRatio( window.devicePixelRatio );
@@ -108,33 +89,38 @@
 			}
 
 			function addNbrImageBySize(subScene, nbr){
-                var textureLoader = new THREE.TextureLoader();
                 var
-					debutX = Math.sqrt(nbr)*100/2,
-					debutY = Math.sqrt(nbr)*100/2
+					nbrLigne = Math.sqrt(nbr);
 				;
 
-				createLine(-100,0,100,nbr,subScene); // face haut
-				createLine(-100,-100,100,nbr,subScene); //face bas
+                var m;
 
-				createLine(-100,0,-100,nbr,subScene); //dos haut
-				createLine(-100,-100,-100,nbr,subScene); // dos bas
+				// createLine(-100,0,100,nbr,subScene); // face haut
+				// createLine(-100,-100,100,nbr,subScene); //face bas
 
-                createLineCote(50,0,-50,nbr,subScene); //coté 1 haut
-                createLineCote(50,-100,-50,nbr,subScene); // coté 1 bas
+                // createLine(-100,0,-100,nbr,subScene); //dos haut
+                // createLine(-100,-100,-100,nbr,subScene); // dos bas
 
-                createLineCote(-150,0,-50,nbr,subScene); //coté 2 haut
-                createLineCote(-150,-100,-50,nbr,subScene); // coté 2 bas
+                // createLineCote(50,0,-50,nbr,subScene); //coté 1 haut
+                // createLineCote(50,-100,-50,nbr,subScene); // coté 1 bas
 
-                createLineFond(-100,50,-50,nbr,subScene);//haut ligne haut
-                createLineFond(-100,50,50,nbr,subScene); //haut ligne bas
+                // createLineCote(-150,0,-50,nbr,subScene); //coté 2 haut
+                // createLineCote(-150,-100,-50,nbr,subScene); // coté 2 bas
 
-                createLineFond(-100,-150,-50,nbr,subScene);//bas ligne haut
-                createLineFond(-100,-150,50,nbr,subScene); //bas ligne bas
+                // createLineFond(-100,50,-50,nbr,subScene);//haut ligne haut
+                // createLineFond(-100,50,50,nbr,subScene); //haut ligne bas
 
+                // createLineFond(-100,-150,-50,nbr,subScene);//bas ligne haut
+                // createLineFond(-100,-150,50,nbr,subScene); //bas ligne bas
 
-                var texture0 = textureLoader.load( './img/Env-Virt-KTD/IMG_0736.PNG' );
-
+                for(m=-nbrLigne*100/2; m<nbrLigne*100/2;m=m+100) {
+                    createLine(-nbrLigne*100/2,m,nbrLigne*100/2,nbr,subScene); //face
+                    createLine(-nbrLigne*100/2,m,-nbrLigne*100/2,nbr,subScene); //dos
+                    createLineCote(nbrLigne*100/2/2,m,-nbrLigne*100/2/2,nbr,subScene); //coté1
+                    createLineCote(-(nbrLigne*100/2/2)-(nbrLigne*100/2),m,-nbrLigne*100/2/2,nbr,subScene); //coté2
+                    createLineFond(-nbrLigne*100/2,nbrLigne*100/2/2,m+(nbrLigne*100/2/2),nbr,subScene);//haut ligne haut
+                    createLineFond(-nbrLigne*100/2,-(nbrLigne*100/2)-(nbrLigne*100/2/2),m+(nbrLigne*100/2/2),nbr,subScene);//bas ligne haut
+                }
 			}
 
 			function createLine(x,y,z,nbr,subScene){
@@ -266,6 +252,7 @@
 				// plane.rotation.y = cube.rotation.y += ( targetRotation - cube.rotation.y ) * 0.05;
 				// plane.rotation.y = petitCube.rotation.y += ( targetRotation - petitCube.rotation.y ) * 0.05;
 				subScene.rotation.y += ( targetRotation - subScene.rotation.y ) * 0.05;
+				// subScene.rotation.x += ( targetRotation - subScene.rotation.x ) * 0.05;
 				// plane.rotation.x = subScene.rotation.x += ( targetRotation - subScene.rotation.x ) * 0.01;
 				// plane.rotation.z = subScene.rotation.z += ( targetRotation - subScene.rotation.z ) * 0.05;
 				renderer.render( subScene, camera );
