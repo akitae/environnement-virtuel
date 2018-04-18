@@ -69,7 +69,8 @@
 
 
 
-                addNbrImageBySize(subScene, 4);
+                addNbrImageBySize(subScene, 4); //ajoute un cube avec comme face 4 images sur 4
+                //addNbrImageBySize(subScene, 9);
 
                 scene.add(subScene);
 
@@ -116,10 +117,10 @@
                 for(m=-nbrLigne*100/2; m<nbrLigne*100/2;m=m+100) {
                     createLine(-nbrLigne*100/2,m,nbrLigne*100/2,nbr,subScene); //face
                     createLine(-nbrLigne*100/2,m,-nbrLigne*100/2,nbr,subScene); //dos
-                    createLineCote(nbrLigne*100/2/2,m,-nbrLigne*100/2/2,nbr,subScene); //coté1
-                    createLineCote(-(nbrLigne*100/2/2)-(nbrLigne*100/2),m,-nbrLigne*100/2/2,nbr,subScene); //coté2
-                    createLineFond(-nbrLigne*100/2,nbrLigne*100/2/2,m+(nbrLigne*100/2/2),nbr,subScene);//haut ligne haut
-                    createLineFond(-nbrLigne*100/2,-(nbrLigne*100/2)-(nbrLigne*100/2/2),m+(nbrLigne*100/2/2),nbr,subScene);//bas ligne haut
+                    createLineCote(nbrLigne*100/2-50,m,-nbrLigne*100/2+50,nbr,subScene); //coté1
+                    createLineCote(-nbrLigne*100/2-50,m,-nbrLigne*100/2+50,nbr,subScene); //coté2
+                    createLineFond(-nbrLigne*100/2,nbrLigne*100/2-50,m+50,nbr,subScene);//haut ligne haut
+                    createLineFond(-nbrLigne*100/2,-nbrLigne*100/2-50,m+50,nbr,subScene);//bas ligne haut
                 }
 			}
 
