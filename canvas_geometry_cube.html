@@ -15,9 +15,6 @@
 	</head>
 	<body>
 
-	<div id="maDiv">
-		<canvas id="test" width="120px" style="border:1px solid #d3d3d3;"></canvas>
-	</div>
 		<script src="libs/three.min.js"></script>
 
 		<script src="js/Projector.js"></script>
@@ -31,13 +28,17 @@
 
 			var camera, scene, renderer;
 
-			var cube, petitCube,petitCube4, plane;
+			var petitCube;
 
 			var targetRotation = 0;
+			var targetRotationY = 0;
 			var targetRotationOnMouseDown = 0;
+			var targetRotationYOnMouseDown = 0;
 
 			var mouseX = 0;
+			var mouseY = 0;
 			var mouseXOnMouseDown = 0;
+			var mouseYOnMouseDown = 0;
 
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
@@ -54,180 +55,28 @@
 				info.style.position = 'absolute';
 				info.style.top = '10px';
 				info.style.width = '100%';
+				info.style.height = '100%';
 				info.style.textAlign = 'center';
 				// info.innerHTML = 'Drag to spin the cube';
 				container.appendChild( info );
 
 				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
-				camera.position.y = 150;
-				camera.position.z = 500;
+				camera.position.y = 20; //hauteur
+				camera.position.z = 500; //zoom
+				camera.position.x = 0;
 
 				scene = new THREE.Scene();
                 subScene = new THREE.Scene();
 				scene.background = new THREE.Color( 0xf0f0f0 );
 
+                subScene.position.y = 10;
 
-				// Cube
 
-				geometry = new THREE.BoxGeometry( 300, 300,300 );
 
-                var textureLoader = new THREE.TextureLoader();
-
-                var texture0 = textureLoader.load( './img/Env-Virt-KTD/IMG_0736.PNG' );
-                var texture1 = textureLoader.load( './img/Env-Virt-KTD/IMG_0738.PNG' );
-                var texture2 = textureLoader.load( './img/Env-Virt-KTD/IMG_0739.PNG' );
-                var texture3 = textureLoader.load( './img/Env-Virt-KTD/IMG_0742.PNG' );
-                var texture4 = textureLoader.load( './img/Env-Virt-KTD/IMG_2644.JPG' );
-                var texture5 = textureLoader.load( './img/Env-Virt-KTD/IMG_2645.JPG' );
-
-                var materials = [
-                    new THREE.MeshBasicMaterial( { map: texture0 } ),
-                    new THREE.MeshBasicMaterial( { map: texture1 } ),
-                    new THREE.MeshBasicMaterial( { map: texture2 } ),
-                    new THREE.MeshBasicMaterial( { map: texture3 } ),
-                    new THREE.MeshBasicMaterial( { map: texture4 } ),
-                    new THREE.MeshBasicMaterial( { map: texture5 } )
-                ];
-                var faceMaterial = new THREE.MeshFaceMaterial( materials );
-
-                // cube = new THREE.Mesh( geometry, faceMaterial );
-                // cube.position.y = 150;
-                // scene.add( cube );
-                // petitCube = new THREE.Mesh( new THREE.BoxGeometry( 100,100,100), new THREE.MeshBasicMaterial( { map: texture0 }) );
-
-				//coté dos bas
-				petitCube = new THREE.Mesh( new THREE.BoxGeometry( 100,100,2), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube.position.x = 0;
-                petitCube.position.y = 0;
-                petitCube.position.z = 0;
-                subScene.add(petitCube);
-                petitCube8 = new THREE.Mesh( new THREE.BoxGeometry( 100,100,2), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube8.position.x = 100;
-                petitCube8.position.y = 0;
-                petitCube8.position.z = 0;
-                subScene.add(petitCube8);
-
-                //coté dos haut
-                petitCube2 = new THREE.Mesh( new THREE.BoxGeometry( 100,100,2), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube2.position.x = 100;
-                petitCube2.position.y = 100;
-                petitCube2.position.z = 0;
-                subScene.add(petitCube2);
-                petitCube9 = new THREE.Mesh( new THREE.BoxGeometry( 100,100,2), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube9.position.x = 0;
-                petitCube9.position.y = 100;
-                petitCube9.position.z = 0;
-                subScene.add(petitCube9);
-
-                //coté face haut
-                petitCube3 = new THREE.Mesh( new THREE.BoxGeometry( 100,100,2), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube3.position.x = 0;
-                petitCube3.position.y = 100;
-                petitCube3.position.z = 200;
-                subScene.add(petitCube3);
-                petitCube10 = new THREE.Mesh( new THREE.BoxGeometry( 100,100,2), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube10.position.x = 100;
-                petitCube10.position.y = 100;
-                petitCube10.position.z = 200;
-                subScene.add(petitCube10);
-
-                //coté face bas
-                petitCube4 = new THREE.Mesh( new THREE.BoxGeometry( 100,100,2), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube4.position.x = 100;
-                petitCube4.position.y = 0;
-                petitCube4.position.z = 200;
-                subScene.add(petitCube4);
-                petitCube11 = new THREE.Mesh( new THREE.BoxGeometry( 100,100,2), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube11.position.x = 0;
-                petitCube11.position.y = 0;
-                petitCube11.position.z = 200;
-                subScene.add(petitCube11);
-
-                //coté 1 bas
-                petitCube5 = new THREE.Mesh( new THREE.BoxGeometry(2,100,100), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube5.position.x = 150;
-                petitCube5.position.y = 0;
-                petitCube5.position.z = 50;
-                subScene.add(petitCube5);
-                petitCube6 = new THREE.Mesh( new THREE.BoxGeometry(2,100,100), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube6.position.x = 150;
-                petitCube6.position.y = 0;
-                petitCube6.position.z = 150;
-                subScene.add(petitCube6);
-
-                //coté 1 haut
-                petitCube5 = new THREE.Mesh( new THREE.BoxGeometry(2,100,100), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube5.position.x = 150;
-                petitCube5.position.y = 100;
-                petitCube5.position.z = 50;
-                subScene.add(petitCube5);
-                petitCube7 = new THREE.Mesh( new THREE.BoxGeometry(2,100,100), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube7.position.x = 150;
-                petitCube7.position.y = 100;
-                petitCube7.position.z = 150;
-                subScene.add(petitCube7);
-
-                //fond
-                petitCube12 = new THREE.Mesh( new THREE.BoxGeometry(100,2,100), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube12.position.x = 0;
-                petitCube12.position.y = -50;
-                petitCube12.position.z = 50;
-                subScene.add(petitCube12);
-
-                //haut
-                petitCube12 = new THREE.Mesh( new THREE.BoxGeometry(100,2,100), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
-                petitCube12.position.x = 0;
-                petitCube12.position.y = 150;
-                petitCube12.position.z = 50;
-                subScene.add(petitCube12);
+                addNbrImageBySize(subScene, 4); //ajoute un cube avec comme face 4 images sur 4
+                //addNbrImageBySize(subScene, 9);
 
                 scene.add(subScene);
-
-                // face1 = new THREE.Mesh( new THREE.BoxGeometry( 100,100,100), new THREE.MeshBasicMaterial( { map: subScene }) );
-                // scene.add(face1);
-
-				//TODO: fusion d'image
-                // var c=document.getElementById("test");
-                // var ctx=c.getContext("2d");
-                // var imageObj1 = new Image();
-                // var imageObj2 = new Image();
-                // imageObj1.src = "./img/Env-Virt-KTD/IMG_2645.JPG"
-                // imageObj1.onload = function() {
-                //     ctx.drawImage(imageObj1, 0, 0, 328, 526);
-                //     imageObj2.src = "./img/Env-Virt-KTD/IMG_2644.JPG";
-                //     imageObj2.onload = function() {
-                //         ctx.drawImage(imageObj2, 15, 85, 300, 300);
-                //         var img = c.toDataURL("./img");
-                //         // document.write('<img src="' + img + '" width="328" height="526"/>');
-                // }
-                // };
-
-                // console.log(imageObj1);
-                // imageObj1.onclick(function () {
-					// console.log("click");
-                // });
-
-
-                // document.createElement('<img src="./img/Env-Virt-KTD/IMG_2644.JPG" width="10" height="10"/>');
-
-                //TODO: creation d'une image = ok
-                var objTo = document.getElementById('maDiv');
-                var x = document.createElement("img");
-                x.setAttribute("src", "./img/Env-Virt-KTD/IMG_2644.JPG");
-                x.setAttribute("width", "100");
-                x.setAttribute("height", "100");
-                objTo.appendChild(x);
-
-
-                /********/
-				// Plane
-
-				var geometry = new THREE.PlaneBufferGeometry( 200, 200 );
-				geometry.rotateX( - Math.PI / 2 );
-
-				var material = new THREE.MeshBasicMaterial( { color: 0xe0e0e0, overdraw: 0.5 } );
-
-				plane = new THREE.Mesh( geometry, material );
 
 				renderer = new THREE.CanvasRenderer();
 				renderer.setPixelRatio( window.devicePixelRatio );
@@ -243,6 +92,78 @@
 				window.addEventListener( 'resize', onWindowResize, false );
 
 			}
+
+			function addNbrImageBySize(subScene, nbr){
+                var
+					nbrLigne = Math.sqrt(nbr);
+				;
+
+                var m;
+
+				// createLine(-100,0,100,nbr,subScene); // face haut
+				// createLine(-100,-100,100,nbr,subScene); //face bas
+
+                // createLine(-100,0,-100,nbr,subScene); //dos haut
+                // createLine(-100,-100,-100,nbr,subScene); // dos bas
+
+                // createLineCote(50,0,-50,nbr,subScene); //coté 1 haut
+                // createLineCote(50,-100,-50,nbr,subScene); // coté 1 bas
+
+                // createLineCote(-150,0,-50,nbr,subScene); //coté 2 haut
+                // createLineCote(-150,-100,-50,nbr,subScene); // coté 2 bas
+
+                // createLineFond(-100,50,-50,nbr,subScene);//haut ligne haut
+                // createLineFond(-100,50,50,nbr,subScene); //haut ligne bas
+
+                // createLineFond(-100,-150,-50,nbr,subScene);//bas ligne haut
+                // createLineFond(-100,-150,50,nbr,subScene); //bas ligne bas
+
+                for(m=-nbrLigne*100/2; m<nbrLigne*100/2;m=m+100) {
+                    createLine(-nbrLigne*100/2,m,nbrLigne*100/2,nbr,subScene); //face
+                    createLine(-nbrLigne*100/2,m,-nbrLigne*100/2,nbr,subScene); //dos
+                    createLineCote(nbrLigne*100/2-50,m,-nbrLigne*100/2+50,nbr,subScene); //coté1
+                    createLineCote(-nbrLigne*100/2-50,m,-nbrLigne*100/2+50,nbr,subScene); //coté2
+                    createLineFond(-nbrLigne*100/2,nbrLigne*100/2-50,m+50,nbr,subScene);//haut ligne haut
+                    createLineFond(-nbrLigne*100/2,-nbrLigne*100/2-50,m+50,nbr,subScene);//bas ligne haut
+                }
+			}
+
+			function createLine(x,y,z,nbr,subScene){
+				for(var i = x; i<Math.sqrt(nbr)*100+x;i=i+100){
+                    var textureLoader = new THREE.TextureLoader();
+                    var texture0 = textureLoader.load( './img/Env-Virt-KTD/IMG_0736.PNG' );
+
+                    petitCube = new THREE.Mesh( new THREE.BoxGeometry( 80,80,2), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
+                    petitCube.position.x = i;
+                    petitCube.position.y = y;
+                    petitCube.position.z = z;
+                    subScene.add(petitCube);
+				}
+			}
+
+            function createLineCote(x,y,z,nbr,subScene){
+                for(var i = z; i<Math.sqrt(nbr)*100+z;i=i+100){
+                    var textureLoader = new THREE.TextureLoader();
+                    var texture0 = textureLoader.load( './img/Env-Virt-KTD/IMG_0736.PNG' );
+                    petitCube = new THREE.Mesh( new THREE.BoxGeometry(2,80,80), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
+                    petitCube.position.x = x;
+                    petitCube.position.y = y;
+                    petitCube.position.z = i;
+                    subScene.add(petitCube);
+                }
+            }
+
+            function createLineFond(x,y,z,nbr,subScene){
+                for(var i = x; i<Math.sqrt(nbr)*100+x;i=i+100){
+                    var textureLoader = new THREE.TextureLoader();
+                    var texture0 = textureLoader.load( './img/Env-Virt-KTD/IMG_0736.PNG' );
+                    petitCube = new THREE.Mesh( new THREE.BoxGeometry(80,2,80), new THREE.MeshFaceMaterial(new THREE.MeshBasicMaterial({map: texture0 })));
+                    petitCube.position.x = i;
+                    petitCube.position.y = y;
+                    petitCube.position.z = z;
+                    subScene.add(petitCube);
+                }
+            }
 
 			function onWindowResize() {
 
@@ -268,14 +189,17 @@
 
 				mouseXOnMouseDown = event.clientX - windowHalfX;
 				targetRotationOnMouseDown = targetRotation;
+				targetRotationYOnMouseDown = targetRotationY;
 
 			}
 
 			function onDocumentMouseMove( event ) {
 
 				mouseX = event.clientX - windowHalfX;
+				mouseY = event.clientY - windowHalfY ;
 
 				targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+				targetRotationY = targetRotationYOnMouseDown + ( mouseY - mouseYOnMouseDown) * 0.02;
 
 			}
 
@@ -321,8 +245,6 @@
 
 			}
 
-			//
-
 			function animate() {
 
 				requestAnimationFrame( animate );
@@ -336,6 +258,8 @@
 				// plane.rotation.y = cube.rotation.y += ( targetRotation - cube.rotation.y ) * 0.05;
 				// plane.rotation.y = petitCube.rotation.y += ( targetRotation - petitCube.rotation.y ) * 0.05;
 				subScene.rotation.y += ( targetRotation - subScene.rotation.y ) * 0.05;
+				subScene.rotation.x += ( targetRotationY - subScene.rotation.x ) *0.05;
+				// subScene.rotation.x += ( targetRotation - subScene.rotation.x ) * 0.05;
 				// plane.rotation.x = subScene.rotation.x += ( targetRotation - subScene.rotation.x ) * 0.01;
 				// plane.rotation.z = subScene.rotation.z += ( targetRotation - subScene.rotation.z ) * 0.05;
 				renderer.render( subScene, camera );
