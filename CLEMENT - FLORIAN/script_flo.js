@@ -2,9 +2,10 @@
 var renderer, scene, camera, sphGeo, material, sphere;
 
 init();
+animate();
 
 function init () {
-    renderer = new THREE.CanvasRenderer();
+    renderer = new THREE.WebGLRenderer();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -26,15 +27,21 @@ function init () {
 
     // Ajout des événements
     window.addEventListener("resize", onWindowResize, false);
-
-    renderer.render(scene, camera);
 }
 
+
 function onWindowResize () {
-    console.log("resize");
-    console.log(window.innerWidth/window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function render () {
+    renderer.render(scene, camera);
+}
+
+function animate () {
+    requestAnimationFrame(animate);
+    render();
 }
