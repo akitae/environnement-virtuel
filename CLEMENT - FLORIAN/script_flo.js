@@ -26,7 +26,9 @@ function init () {
 
     controls = new THREE.OrbitControls(camera);
 
-    texture = THREE.ImageUtils.loadTexture("texture_bleu.jpg");
+    texture = new THREE.TextureLoader().load(
+        "texture_bleu.jpg"
+    );
 
     sphGeo = new THREE.SphereGeometry(1 ,100 ,100);
     material = [
@@ -35,6 +37,7 @@ function init () {
 
     sphere = new THREE.Mesh(sphGeo, material);
     scene.add(sphere);
+
 
     // Ajout des événements
     window.addEventListener('resize', onWindowResize, false);
