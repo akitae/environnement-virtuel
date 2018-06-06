@@ -4,9 +4,10 @@ var renderer, scene, camera, sphGeo, material, sphere;
 init();
 
 function init () {
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.CanvasRenderer();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
     document.getElementById("sphere").appendChild(renderer.domElement);
 
     scene = new THREE.Scene();
@@ -30,6 +31,8 @@ function init () {
 }
 
 function onWindowResize () {
+    console.log("resize");
+    console.log(window.innerWidth/window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
