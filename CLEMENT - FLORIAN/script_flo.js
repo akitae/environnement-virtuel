@@ -21,7 +21,7 @@ function init () {
     scene = new THREE.Scene();
 
     camera  = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.set(0, 0, 5);
+    camera.position.set(0, 0, 10);
     scene.add(camera);
 
     controls = new THREE.OrbitControls(camera);
@@ -46,14 +46,16 @@ function init () {
     sphere.position.y = 0;
     sphere.position.x = 0;
     sphere.position.z = 0;
-    scene.add(sphere);
+    //scene.add(sphere);
 
-    var latitude = 0;
+    /*var latitude = 0;
     var longitude = 0;
     var radius = 1;
 
-    var littleSphereMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    var littleSphereGeo = new THREE.SphereGeometry(0.002);
+    var plan = new THREE.PlaneGeometry(0.01, 0.01);
+    var img  = new THREE.MeshBasicMaterial({
+        map: texture
+    });
 
     while (longitude < 360) {
 
@@ -66,17 +68,20 @@ function init () {
             z: radius * Math.cos(phi)
         };
 
-        var sphero = new THREE.Mesh(littleSphereGeo, littleSphereMaterial);
-        sphero.position.set(gridPosition.x, gridPosition.y, gridPosition.z);
-        scene.add(sphero);
 
-        latitude += 5;
+
+        var plane = new THREE.Mesh(plan, img);
+        plane.position.set(gridPosition.x, gridPosition.y, gridPosition.z);
+
+        scene.add(plane);
+
+        latitude += 10;
         if (latitude > 360) {
             latitude = 0;
-            longitude += 5;
+            longitude += 10;
         }
-    }
-
+    }*/
+    initPoints();
 
     // Ajout des événements
     window.addEventListener('resize', onWindowResize, false);
@@ -84,6 +89,42 @@ function init () {
     window.addEventListener('mousemove', onMouseMove, false);
     window.addEventListener('mouseup', onMouseUp, false);
     window.addEventListener('DOMMouseScroll', onMouseZoom, false);*/
+}
+
+
+
+function randomPointInSphere( radius ) {
+    var v = new THREE.Vector3();
+
+    var x = THREE.Math.randFloat( -1, 1 );
+    var y = THREE.Math.randFloat( -1, 1 );
+    var z = THREE.Math.randFloat( -1, 1 );
+    var normalizationFactor = 1 / Math.sqrt( x * x + y * y + z * z );
+
+    v.x = x * normalizationFactor * radius;
+    v.y = y * normalizationFactor * radius;
+    v.z = z * normalizationFactor * radius;
+
+    return v;
+}
+
+function initPoints() {
+
+    var geometry = new THREE.PlaneGeometry(0.1, 0.1);
+
+
+    for (var i = 0; i < 5000; i ++ ) {
+
+        var vertex = randomPointInSphere(5);
+
+        material = new THREE.MeshBasicMaterial({ map: texture });
+        particles = new THREE.Mesh(geometry, material);
+        particles.position.set(vertex.x, vertex.y, vertex.z );
+        particles.rotation.y = particles.rotation.y * Math.PI;
+
+        scene.add( particles );
+    }
+
 }
 
 /**
