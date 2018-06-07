@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>three.js css3d - periodic table</title>
+    <title>environnement virtuel</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <style>
@@ -101,6 +101,7 @@
 <div id="info">Environnement virtuel</div>
 <div id="container"></div>
 <div id="menu">
+    <!--TODO: faire un form pour récup la valeur coché-->
     <!--<button id="table">TABLE</button>-->
     <button id="sphere">SPHERE</button>
     <button id="helix">CHEMIN</button>
@@ -159,8 +160,6 @@
 
         // table
         for ( var i = 0; i < table.length; i ++ ) {
-
-            // console.log();
             var element = document.createElement( 'div' );
             element.className = 'element';
             var symbol = document.createElement( 'div' );
@@ -170,9 +169,7 @@
 
             var details = document.createElement( 'div' );
             details.className = 'details';
-            // details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
             details.innerHTML = "<img src='./img/Env-Virt-KTD/"+table[i]+"'>";
-            // details.innerHTML = "<img src='img/Env-Virt-KTD/IMG_0738.PNG'>";
             element.appendChild( details );
             var object = new THREE.CSS3DObject( element );
             object.position.x = Math.random() * 4000 - 2000;
@@ -236,6 +233,7 @@
         var button = document.getElementById( 'helix' );
         button.addEventListener( 'click', function ( event ) {
             transform( targets.helix, 2000 );
+            // location.href = location.href + '?choice=32'; //mettre la valeur ckecked TODO: Recharger la page si on change les images ?
         }, false );
         var button = document.getElementById( 'grid' );
         button.addEventListener( 'click', function ( event ) {
