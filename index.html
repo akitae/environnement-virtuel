@@ -1,45 +1,284 @@
-<canvas id="canvas"></canvas>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>three.js css3d - periodic table</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            background-color: #000000;
+            margin: 0;
+            font-family: Helvetica, sans-serif;;
+            overflow: hidden;
+            color: aqua;
+        }
+        a {
+            color: #ffffff;
+        }
+        #info {
+            position: absolute;
+            width: 100%;
+            color: #ffffff;
+            padding: 5px;
+            font-family: Monospace;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1;
+        }
+        #menu {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        .element {
+            width: 120px;
+            height: 160px;
+            /*box-shadow: 0px 0px 12px rgba(0,255,255,0.5);*/
+            border: 1px solid rgba(127,255,255,0.25);
+            text-align: center;
+            cursor: default;
+        }
+        .element:hover {
+            box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
+            border: 1px solid rgba(127,255,255,0.75);
+        }
+        .element .number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 12px;
+            /*color: rgba(127,255,255,0.75);*/
+        }
+        .element .symbol {
+            position: absolute;
+            top: 40px;
+            left: 0px;
+            right: 0px;
+            font-size: 60px;
+            font-weight: bold;
+            color: rgba(255,255,255,0.75);
+            /*text-shadow: 0 0 10px rgba(0,255,255,0.95);*/
+        }
+        .element .details {
+            position: absolute;
+            bottom: 15px;
+            left: 0px;
+            right: 0px;
+            font-size: 12px;
+            /*color: rgba(127,255,255,0.75);*/
+        }
+        button {
+            color: rgba(127,255,255,0.75);
+            background: transparent;
+            outline: 1px solid rgba(127,255,255,0.75);
+            border: 0px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: rgba(0,255,255,0.5);
+        }
+        button:active {
+            color: #000000;
+            background-color: rgba(0,255,255,0.75);
+        }
+        img{
+            width:100px;
+        }
+    </style>
+</head>
+<body>
+<script src="js/three.js"></script>
+<script src="js/tween.min.js"></script>
+<script src="js/TrackballControls.js"></script>
+<script src="js/CSS3DRenderer.js"></script>
 
-<!-- vertex shader -->
-<script id="3d-vertex-shader" type="x-shader/x-vertex">
-attribute vec4 a_position;
-attribute vec2 a_texcoord;
+<div id="info">Environnement virtuel</div>
+<div id="container"></div>
+<div id="menu">
+    <!--<button id="table">TABLE</button>-->
+    <button id="sphere">SPHERE</button>
+    <button id="helix">CHEMIN</button>
+    <button id="grid">CUBE</button>
 
-uniform mat4 u_matrix;
+    <br>
+    <label for="ktd"> KTD</label>
+    <input type="radio" name="images" id="ktd" checked/>
+    <label for="sud"> SUD</label>
+    <input type="radio" name="images" id="sud"/>
+    <label for="tou"> Tou</label>
+    <input type="radio" name="images" id="tou"/>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
 
-varying vec2 v_texcoord;
+    var camera, scene, renderer;
+    var controls;
+    var objects = [];
+    var targets = {  sphere: [], helix: [], grid: []};
+    var table = [];
 
-void main() {
-  // Multiply the position by the matrix.
-  gl_Position = u_matrix * a_position;
+    var dir = "img/Env-Virt-KTD";
+    var fileextension = ".JPG";
+    $.ajax({
+        url: dir,
+        success: function (data) {
 
-  // Pass the texcoord to the fragment shader.
-  v_texcoord = a_texcoord;
-}
+            var tableImg = [];
+            $(data).find("a:contains(" + fileextension + ")").each(function () {
+
+
+                var filename = this.pathname;
+
+                var rest = filename.substring(0, filename.lastIndexOf("/") + 1);
+                var last = filename.substring(filename.lastIndexOf("/") + 1, filename.length);
+
+                rest1=rest+dir;
+                filename=rest1+last;
+                tableImg.push(last);
+
+            });
+            table = tableImg;
+//
+            init();
+            animate();
+        }
+    });
+//     init();
+//     animate();
+    function init() {
+
+        camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
+        camera.position.z = 3000;
+        scene = new THREE.Scene();
+
+        // table
+        for ( var i = 0; i < table.length; i ++ ) {
+
+            // console.log();
+            var element = document.createElement( 'div' );
+            element.className = 'element';
+            var symbol = document.createElement( 'div' );
+            symbol.className = 'symbol';
+
+            element.appendChild( symbol );
+
+            var details = document.createElement( 'div' );
+            details.className = 'details';
+            // details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
+            details.innerHTML = "<img src='img/Env-Virt-KTD/"+table[i]+"'>";
+            // details.innerHTML = "<img src='img/Env-Virt-KTD/IMG_0738.PNG'>";
+            element.appendChild( details );
+            var object = new THREE.CSS3DObject( element );
+            object.position.x = Math.random() * 4000 - 2000;
+            object.position.y = Math.random() * 4000 - 2000;
+            object.position.z = Math.random() * 4000 - 2000;
+            scene.add( object );
+            objects.push( object );
+        }
+        // sphere
+        var vector = new THREE.Vector3();
+        var spherical = new THREE.Spherical();
+        for ( var i = 0, l = objects.length; i < l; i ++ ) {
+            var phi = Math.acos( -1 + ( 2 * i ) / l );
+            var theta = Math.sqrt( l * Math.PI ) * phi;
+            var object = new THREE.Object3D();
+            spherical.set( 800, phi, theta );
+            object.position.setFromSpherical( spherical );
+            vector.copy( object.position ).multiplyScalar( 2 );
+            object.lookAt( vector );
+            targets.sphere.push( object );
+        }
+        // helix
+        var vector = new THREE.Vector3();
+        var cylindrical = new THREE.Cylindrical();
+        for ( var i = 0, l = objects.length; i < l; i ++ ) {
+            var theta = i * 0.175 + Math.PI;
+            var y = - ( i * 8 ) + 450;
+            var object = new THREE.Object3D();
+            cylindrical.set( 900, theta, y );
+            object.position.setFromCylindrical( cylindrical );
+            vector.x = object.position.x * 2;
+            vector.y = object.position.y;
+            vector.z = object.position.z * 2;
+            object.lookAt( vector );
+            targets.helix.push( object );
+        }
+        // grid
+        for ( var i = 0; i < objects.length; i ++ ) {
+            var object = new THREE.Object3D();
+            object.position.x = ( ( i % 5 ) * 400 ) - 800;
+            object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
+            object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
+            targets.grid.push( object );
+        }
+
+        renderer = new THREE.CSS3DRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.getElementById( 'container' ).appendChild( renderer.domElement );
+        //
+        controls = new THREE.TrackballControls( camera, renderer.domElement );
+        controls.rotateSpeed = 0.5;
+        controls.minDistance = 500;
+        controls.maxDistance = 6000;
+        controls.addEventListener( 'change', render );
+
+        var button = document.getElementById( 'sphere' );
+        button.addEventListener( 'click', function ( event ) {
+            transform( targets.sphere, 2000 );
+
+        }, false );
+        var button = document.getElementById( 'helix' );
+        button.addEventListener( 'click', function ( event ) {
+            transform( targets.helix, 2000 );
+        }, false );
+        var button = document.getElementById( 'grid' );
+        button.addEventListener( 'click', function ( event ) {
+            transform( targets.grid, 2000 );
+        }, false );
+        transform( targets.sphere, 2000 );
+
+        window.addEventListener( 'resize', onWindowResize, false );
+    }
+    function transform( targets, duration ) {
+        TWEEN.removeAll();
+        for ( var i = 0; i < objects.length; i ++ ) {
+            var object = objects[ i ];
+            var target = targets[ i ];
+            new TWEEN.Tween( object.position )
+                .to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
+                .easing( TWEEN.Easing.Exponential.InOut )
+                .start();
+            new TWEEN.Tween( object.rotation )
+                .to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
+                .easing( TWEEN.Easing.Exponential.InOut )
+                .start();
+        }
+        new TWEEN.Tween( this )
+            .to( {}, duration * 2 )
+            .onUpdate( render )
+            .start();
+    }
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        render();
+    }
+    function animate() {
+        requestAnimationFrame( animate );
+        TWEEN.update();
+        controls.update();
+    }
+    function render() {
+        renderer.render( scene, camera );
+    }
 </script>
-<!-- fragment shader -->
-<script id="3d-fragment-shader" type="x-shader/x-fragment">
-precision mediump float;
 
-// Passed in from the vertex shader.
-varying vec2 v_texcoord;
-
-// The texture.
-uniform sampler2D u_texture;
-
-void main() {
-   gl_FragColor = texture2D(u_texture, v_texcoord);
-}
-</script>
-<!--
-for most samples webgl-utils only provides shader compiling/linking and
-canvas resizing because why clutter the examples with code that's the same in every sample.
-See http://webglfundamentals.org/webgl/lessons/webgl-boilerplate.html
-and http://webglfundamentals.org/webgl/lessons/webgl-resizing-the-canvas.html
-for webgl-utils, m3, m4, and webgl-lessons-ui.
--->
-<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
-<script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-helper.js"></script>
-<!-- you can and should delete this script. it is only used on the site to help with errors -->
-<script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
-<script src="cube.js"></script>
+</body>
+</html>
