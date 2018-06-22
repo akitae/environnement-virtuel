@@ -115,7 +115,7 @@
     <label for="tou"> Tou</label>
     <input type="radio" name="images" id="tou"/>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="js/jquery/jquery-3.3.1.min.js"></script>
 <script>
 
     var camera, scene, renderer;
@@ -124,34 +124,57 @@
     var targets = {  sphere: [], helix: [], grid: []};
     var table = [];
 
-    var dir = "./img/Env-Virt-KTD";
-    var fileextension = ".JPG";
-    $.ajax({
-        url: dir,
-        success: function (data) {
-
-            var tableImg = [];
-            $(data).find("a:contains(" + fileextension + ")").each(function () {
+    let directory = {
+        SUD: "./img/Env-Virt-Sud",
+        KTD: "./img/Env-Virt-KTD",
+        TOU: "./img/Env-Virtuels-Tou"
+    };
 
 
-                var filename = this.pathname;
+    $(function () {
 
-                var rest = filename.substring(0, filename.lastIndexOf("/") + 1);
-                var last = filename.substring(filename.lastIndexOf("/") + 1, filename.length);
+        getImagePath(directory.TOU).then(function (tableImage) {
+            table = tableImage;
 
-                rest1=rest+dir;
-                filename=rest1+last;
-                tableImg.push(last);
-
-            });
-            table = tableImg;
-//
             init();
             animate();
+        });
+
+        function getImagePath(directory) {
+            return new Promise(function (resolve, reject) {
+                // Tableau des différentes extensions des images.
+                let extensions = ['.JPG', ".PNG"];
+                let tableImage = [];
+
+                // Requête ajax pour récupérer les différentes extensions des images.
+                $.ajax({
+                    url: directory
+                }).done(function (data) {
+                    console.info("Recupération des chemins des images.");
+
+                    let nbImage = 0;
+                    extensions.forEach(function (extension) {
+                        $(data).find("a:contains("+extension+")").each(function () {
+                            let filename = directory+this.pathname;
+                            tableImage.push(filename);
+                            nbImage++;
+                        });
+                    });
+
+                    console.info(nbImage+" ont été récupérées.");
+
+                    resolve(tableImage);
+                }).fail(function (error) {
+                    console.error("Erreur dans la récupération des chemins des images.");
+                    reject(error);
+                });
+            });
+
         }
+
     });
-//     init();
-//     animate();
+
+
     function init() {
 
         camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -169,7 +192,7 @@
 
             var details = document.createElement( 'div' );
             details.className = 'details';
-            details.innerHTML = "<img src='./img/Env-Virt-KTD/"+table[i]+"'>";
+            details.innerHTML = "<img src='"+table[i]+"'>";
             element.appendChild( details );
             var object = new THREE.CSS3DObject( element );
             object.position.x = Math.random() * 4000 - 2000;
