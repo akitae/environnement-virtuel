@@ -29,3 +29,5 @@ Et ajoutez-y la ligne suivante :
 Où **environnement-virtuel.local** est le même nom que le **ServerName** mis précédemment dans Apache.
 
 Il vous suffit de taper **environnement-virtuel.local** dans votre navigateur pour accéder au projet.
+
+### **Préférer Chrome à Firefox qui est  bien plus efficace en terme de performance pour le chargement des images et l'affichage des formes.**
