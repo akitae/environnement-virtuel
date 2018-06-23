@@ -3,11 +3,18 @@ $(function () {
     let camera, scene, renderer;
     // Rotation, zoom.
     let controls;
-    // Tableau des liens des images.
-    let table = [];
     // Tous les objets images.
     let objects = [];
-    var targets = {  sphere: [], helix: [], grid: []};
+    // Différentes formes.
+    let targets = {
+        sphere: [],
+        helix: [],
+        grid: []
+    };
+    // Id de la forme en cours.
+    let formeInDisplay = "sphere";
+    // Temps d'animation entre les formes.
+    let duration = 2000;
 
 
     // Taille maximum des images.
@@ -20,22 +27,30 @@ $(function () {
         TOU: "./img/Env-Virtuels-Tou"
     };
 
-    getImagePath(directory.KTD).then(function (tableImage) {
-        table = tableImage;
+    // Récupération des chemins des images.
+    getImagePath(directory.KTD).then(function (tableImagePath) {
+        // Création des objets images.
+        createObject(tableImagePath).then(function (tableImage) {
+            initScene();
+            init(tableImage);
+            animate();
+        });
 
-        initScene();
-        init();
-        animate();
     });
 
     // Changement de répertoire des images.
     $("input[name=image]:radio").change(function () {
+        $('#wait').addClass("d-block");
         // On supprime toutes les images de la scène.
         for (let index = 0; index < objects.length; index++) {
             scene.remove(objects[index]);
         }
-        targets = {  sphere: [], helix: [], grid: []};
-
+        // On réinitialise les formes.
+        targets = {
+            sphere: [],
+            helix: [],
+            grid: []
+        };
 
         // On sélectionne le path suivant la sélection.
         let pathDirectory;
@@ -50,11 +65,14 @@ $(function () {
                 pathDirectory = directory.TOU;
                 break;
         }
+        console.info("Changement du dossier des images : "+this.value);
 
-        getImagePath(pathDirectory).then(function (tableImage) {
-            table = tableImage;
+        getImagePath(pathDirectory).then(function (tableImagePath) {
 
-            updateScene();
+            createObject(tableImagePath).then(function (tableImage) {
+               updateScene(tableImage);
+            });
+
         });
 
     });
@@ -68,7 +86,7 @@ $(function () {
         return new Promise(function (resolve, reject) {
             // Tableau des différentes extensions des images.
             let extensions = ['.JPG', ".PNG"];
-            let tableImage = [];
+            let tableImagePath = [];
 
             // Requête ajax pour récupérer les différentes extensions des images.
             $.ajax({
@@ -80,14 +98,14 @@ $(function () {
                 extensions.forEach(function (extension) {
                     $(data).find("a:contains("+extension+")").each(function () {
                         let filename = directory+this.pathname;
-                        tableImage.push(filename);
+                        tableImagePath.push(filename);
                         nbImage++;
                     });
                 });
 
                 console.info(nbImage+" images ont été récupérées.");
 
-                resolve(tableImage);
+                resolve(tableImagePath);
             }).fail(function (error) {
                 console.error("Erreur dans la récupération des chemins des images.");
                 reject(error);
@@ -97,27 +115,79 @@ $(function () {
     }
 
     /**
+     * Création de toutes les images du DOM.
+     * @param tableImagePath
+     * @returns {Promise<any>}
+     */
+    function createObject (tableImagePath) {
+        return new Promise(function (resolve) {
+            let tablePromise = [];
+
+            // On crée pour toutes les images le composant du DOM.
+            for (let index = 0; index < tableImagePath.length; index++) {
+                let promise = new Promise(function (resolve) {
+                    let image = new Image();
+                    image.src = tableImagePath[index];
+                    image.onload = function () {
+                        resolve(this);
+                    }
+                });
+
+                tablePromise.push(promise);
+            }
+
+            console.info("Chargement des images en cours.");
+
+            Promise.all(tablePromise).then(function(tableImage) {
+                console.info("Chargement terminés !");
+                resolve(tableImage);
+            });
+        });
+    }
+
+    /**
      * Initialisation de la scène.
      */
     function initScene () {
         camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 10000);
-        camera.position.z = 4000;
+        camera.position.z = 6000;
         scene = new THREE.Scene();
+    }
+
+    /**
+     * Initialisation de tout les composants de la scène.
+     * @param tableImage
+     */
+    function init(tableImage) {
+
+        initObject(tableImage);
+        createSphere();
+        createChemin();
+        createTableau();
+
+        createRenderer();
+        createControls();
+        addListeners();
+
+        hideWait();
+
+        transform(targets.sphere, duration);
+
+        window.addEventListener('resize', onWindowResize, false);
     }
 
     /**
      * Initialisation des objets images.
      */
-    function initObject () {
+    function initObject (tableImage) {
 
         objects = [];
         // Initialisation des images et des positions.
-        for (let index = 0; index < table.length; index++) {
+        for (let index = 0; index < tableImage.length; index++) {
             let element = document.createElement("div");
             element.className = 'element';
 
-            let image = new Image();
-            image.src = table[index];
+            let image = tableImage[index];
 
             size = scaleImage(image, maxWidth, maxHeight);
             image.width = size.width;
@@ -130,8 +200,8 @@ $(function () {
             object.position.y = Math.random() * 4000 - 2000;
             object.position.z = Math.random() * 4000 - 2000;
 
-            scene.add( object );
-            objects.push( object );
+            scene.add(object);
+            objects.push(object);
         }
     }
 
@@ -153,7 +223,7 @@ $(function () {
             vector.copy(object.position).multiplyScalar(2);
 
             object.lookAt(vector);
-            targets.sphere.push( object );
+            targets.sphere.push(object);
         }
     }
 
@@ -176,68 +246,83 @@ $(function () {
             vector.y = object.position.y;
             vector.z = object.position.z * 2;
 
-            object.lookAt( vector );
-            targets.helix.push( object );
+            object.lookAt(vector);
+            targets.helix.push(object);
         }
     }
 
     /**
-     * Mise à jour de la scène.
+     * Création du tableau.
      */
-    function updateScene () {
-        initObject();
-        createSphere();
-        createChemin();
+    function createTableau () {
 
-        transform( targets.sphere, 2000 );
+        for (let index = 0; index < objects.length; index++) {
+            let object = new THREE.Object3D();
+            object.position.x = ((index % 5) * 400) - 800;
+            object.position.y = ( -(Math.floor(index/5) % 5) * 400) + 800;
+            object.position.z = (Math.floor( index/25)) * 1000 - 2000;
+
+            targets.grid.push(object);
+        }
     }
 
-    function init() {
+    /**
+     * Ajout des évènements pour changer de forme.
+     */
+    function addListeners () {
 
-        initObject();
+        /**
+         * Sphère
+         */
+        $('#sphere').on("click", function () {
+            transform(targets.sphere, duration);
+            formeInDisplay = this.id;
+            activeButton(this.id);
+        });
 
-        createSphere();
+        /**
+         * Chemin
+         */
+        $('#helix').on("click", function () {
+            transform(targets.helix, duration);
+            formeInDisplay = this.id;
+            activeButton(this.id);
+        });
 
-        createChemin();
+        /**
+         * Tableau
+         */
+        $('#grid').on("click", function () {
+            transform(targets.grid, duration);
+            formeInDisplay = this.id;
+            activeButton(this.id);
+        });
 
-        // grid
-        for ( var i = 0; i < objects.length; i ++ ) {
-            var object = new THREE.Object3D();
-            object.position.x = ( ( i % 5 ) * 400 ) - 800;
-            object.position.y = ( - ( Math.floor( i / 5 ) % 5 ) * 400 ) + 800;
-            object.position.z = ( Math.floor( i / 25 ) ) * 1000 - 2000;
-            targets.grid.push( object );
+        /**
+         * Active le bouton de la forme sélectionné.
+         * @param id
+         */
+        function activeButton (id) {
+            $('#btn-forme').find('button').each(function () {
+               $(this).removeClass("active");
+            });
+
+            $("#"+id).addClass("active");
         }
+    }
 
-        renderer = new THREE.CSS3DRenderer();
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        document.getElementById( 'container' ).appendChild( renderer.domElement );
+    /**
+     * Mise à jour de la scène avec les nouvelles images.
+     */
+    function updateScene (tableImage) {
+        initObject(tableImage);
+        createSphere();
+        createChemin();
+        createTableau();
 
-        controls = new THREE.TrackballControls( camera, renderer.domElement );
-        controls.rotateSpeed = 0.5;
-        controls.minDistance = 500;
-        controls.maxDistance = 6000;
-        controls.addEventListener( 'change', render );
+        hideWait();
 
-        var button = document.getElementById( 'sphere' );
-        button.addEventListener( 'click', function ( event ) {
-            transform( targets.sphere, 2000 );
-
-        }, false );
-        var button = document.getElementById( 'helix' );
-        button.addEventListener( 'click', function ( event ) {
-            transform( targets.helix, 2000 );
-            // location.href = location.href + '?choice=32'; //mettre la valeur ckecked TODO: Recharger la page si on change les images ?
-        }, false );
-        var button = document.getElementById( 'grid' );
-        button.addEventListener( 'click', function ( event ) {
-            transform( targets.grid, 2000 );
-        }, false );
-
-
-        transform( targets.helix, 2000 );
-
-        window.addEventListener( 'resize', onWindowResize, false );
+        transform(returnTarget(formeInDisplay), duration);
     }
 
     /**
@@ -263,44 +348,89 @@ $(function () {
         return size;
     }
 
+    /**
+     * Retourne la forme suivant l'id de l'objet souhaité.
+     */
+    function returnTarget (id) {
+        switch (id) {
+            case "sphere":
+                return targets.sphere;
+            case "helix":
+                return targets.helix;
+            case "grid":
+                return targets.grid;
+        }
+    }
 
-    function transform( targets, duration ) {
+    /**
+     * Cache la div d'information de chargement des images.
+     */
+    function hideWait () {
+        $('#wait').removeClass("d-block");
+    }
+
+    /**
+     * Permet de passer en animation d'une forme à l'autre.
+     * @param targets
+     * @param duration
+     */
+    function transform(targets, duration) {
         TWEEN.removeAll();
-        for ( var i = 0; i < objects.length; i ++ ) {
-            var object = objects[ i ];
-            var target = targets[ i ];
-            new TWEEN.Tween( object.position )
-                .to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration )
-                .easing( TWEEN.Easing.Exponential.InOut )
+
+        for (let index = 0; index < objects.length; index++) {
+            let object = objects[index];
+            let target = targets[index];
+
+            new TWEEN.Tween(object.position)
+                .to( { x: target.position.x, y: target.position.y, z: target.position.z }, Math.random() * duration + duration)
+                .easing(TWEEN.Easing.Exponential.InOut)
                 .start();
-            new TWEEN.Tween( object.rotation )
-                .to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration )
-                .easing( TWEEN.Easing.Exponential.InOut )
+
+            new TWEEN.Tween(object.rotation)
+                .to( { x: target.rotation.x, y: target.rotation.y, z: target.rotation.z }, Math.random() * duration + duration)
+                .easing(TWEEN.Easing.Exponential.InOut)
                 .start();
         }
-        new TWEEN.Tween( this )
-            .to( {}, duration * 2 )
-            .onUpdate( render )
+
+        new TWEEN.Tween(this)
+            .to({}, duration * 2)
+            .onUpdate(render)
             .start();
+    }
+
+    /**
+     * Méthode de base pour l'affichage de la scène en 3D.
+     */
+
+    function createRenderer () {
+        renderer = new THREE.CSS3DRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.getElementById('container').appendChild(renderer.domElement);
+    }
+
+    function createControls () {
+        controls = new THREE.TrackballControls(camera, renderer.domElement);
+        controls.rotateSpeed = 0.5;
+        controls.minDistance = 500;
+        controls.maxDistance = 7000;
+        controls.addEventListener('change', render);
     }
 
     function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.setSize(window.innerWidth, window.innerHeight);
         render();
     }
 
     function animate() {
-        requestAnimationFrame( animate );
+        requestAnimationFrame(animate);
         TWEEN.update();
         controls.update();
     }
 
     function render() {
-        renderer.render( scene, camera );
+        renderer.render(scene, camera);
     }
 
 });
-
-

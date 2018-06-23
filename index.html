@@ -1,105 +1,56 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>environnement virtuel</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <head>
+        <title>Environnement Virtuel</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+        <link rel="stylesheet" href="css/style.css"/>
+    </head>
 
-    <style>
-        html, body {
-            height: 100%;
-        }
-        body {
-            background-color: #000000;
-            margin: 0;
-            font-family: Helvetica, sans-serif;;
-            overflow: hidden;
-            color: aqua;
-        }
-        a {
-            color: #ffffff;
-        }
-        #info {
-            position: absolute;
-            width: 100%;
-            color: #ffffff;
-            padding: 5px;
-            font-family: Monospace;
-            font-size: 13px;
-            font-weight: bold;
-            text-align: center;
-            z-index: 1;
-        }
-        #menu {
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-        }
-        .element {
+    <body>
+        <div class="container-title">
+            <div class="title">Environnement Virtuel</div>
+            <div class="names btn btn-info">Noémie LEITAO / Anthony ZADIKIAN / Clément DAS NEVES / Florian LEPHORE</div>
+        </div>
 
-            /*box-shadow: 0px 0px 12px rgba(0,255,255,0.5);*/
-            border: 1px solid rgba(127,255,255,0.25);
-            text-align: center;
-            cursor: default;
-        }
-        .element:hover {
-            box-shadow: 0px 0px 12px rgba(0,255,255,0.75);
-            border: 1px solid rgba(127,255,255,0.75);
-        }
+        <div id="container"></div>
+        <div id="wait" class="wait d-block">
+            <div class="alert alert-primary" role="alert">
+                <strong>Chargement des images...</strong>
+                <div class="progress">
+                    <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                </div>
+            </div>
 
+        </div>
 
-        button {
-            color: rgba(127,255,255,0.75);
-            background: transparent;
-            outline: 1px solid rgba(127,255,255,0.75);
-            border: 0px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: rgba(0,255,255,0.5);
-        }
-        button:active {
-            color: #000000;
-            background-color: rgba(0,255,255,0.75);
-        }
-    </style>
-</head>
-<body>
-<script src="js/three.js"></script>
-<script src="js/tween.min.js"></script>
-<script src="js/TrackballControls.js"></script>
-<script src="js/CSS3DRenderer.js"></script>
+        <div id="menu" class="menu">
 
-<div id="info">Environnement virtuel</div>
-<div id="container"></div>
-<div id="menu">
-    <!--<button id="table">TABLE</button>-->
-    <button id="sphere">SPHERE</button>
-    <button id="helix">CHEMIN</button>
-    <button id="grid">CUBE</button>
+            <div id="btn-forme" class="btn-forme">
+                <button id="sphere" class="btn active">Sphère</button>
+                <button id="helix" class="btn">Chemin</button>
+                <button id="grid" class="btn">Tableau</button>
+            </div>
 
-    <br>
+            <!-- Sélection du répertoire d'image -->
+            <div class="btn-group btn-group-toggle btn-dossier" data-toggle="buttons">
+                <label class="btn btn-secondary active"><input type="radio" name="image" value="KTD" checked>KTD</label>
+                <label class="btn btn-secondary"><input type="radio" name="image" value="SUD">SUD</label>
+                <label class="btn btn-secondary"><input type="radio" name="image" value="TOU">TOU</label>
+            </div>
 
-    <!-- Sélection du répertoire d'image -->
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-            <input type="radio" name="image" value="KTD" checked>KTD
-        </label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="image" value="SUD">SUD
-        </label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="image" value="TOU">TOU
-        </label>
-    </div>
+        </div>
 
-</div>
-<script src="js/jquery/jquery-3.3.1.min.js"></script>
-<script src="js/bootstrap/bootstrap.min.js"></script>
-<script src="script.js"></script>
+        <script type="text/javascript" src="js/three.js"></script>
+        <!-- Animations -->
+        <script type="text/javascript" src="js/tween.min.js"></script>
+        <script type="text/javascript" src="js/TrackballControls.js"></script>
+        <script type="text/javascript" src="js/CSS3DRenderer.js"></script>
 
-</body>
+        <script type="text/javascript" src="js/jquery/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="script.js"></script>
+
+    </body>
 </html>
