@@ -26,29 +26,24 @@ function init () {
 
     controls = new THREE.OrbitControls(camera);
 
-    texture = new THREE.TextureLoader().load(
-        "texture.jpg"
-    );
-
     texture_bleu = new THREE.TextureLoader().load(
         "texture_bleu.jpg"
     );
 
 
 
-    sphGeo = new THREE.SphereGeometry(1 ,100 ,100);
+    /*sphGeo = new THREE.SphereGeometry(1 ,100 ,100);
     material = [
-        new THREE.MeshBasicMaterial({ map: texture_bleu }),
-        new THREE.MeshBasicMaterial({ map: texture })
+        new THREE.MeshBasicMaterial({ map: texture_bleu })
     ];
 
     sphere = new THREE.Mesh(sphGeo, material);
     sphere.position.y = 0;
     sphere.position.x = 0;
-    sphere.position.z = 0;
+    sphere.position.z = 0;*/
     //scene.add(sphere);
 
-    /*var latitude = 0;
+    var latitude = 0;
     var longitude = 0;
     var radius = 1;
 
@@ -80,8 +75,8 @@ function init () {
             latitude = 0;
             longitude += 10;
         }
-    }*/
-    initPoints();
+    }
+    //initPoints();
 
     // Ajout des événements
     window.addEventListener('resize', onWindowResize, false);
@@ -113,11 +108,11 @@ function initPoints() {
     var geometry = new THREE.PlaneGeometry(0.1, 0.1);
 
 
-    for (var i = 0; i < 5000; i ++ ) {
+    for (var i = 0; i < 2000; i ++ ) {
 
         var vertex = randomPointInSphere(5);
 
-        material = new THREE.MeshBasicMaterial({ map: texture });
+        material = new THREE.MeshBasicMaterial({ map: texture_bleu });
         particles = new THREE.Mesh(geometry, material);
         particles.position.set(vertex.x, vertex.y, vertex.z );
         particles.rotation.y = particles.rotation.y * Math.PI;
