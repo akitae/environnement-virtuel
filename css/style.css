@@ -1,0 +1,83 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #747d8c;
+    font-family: Helvetica, sans-serif;;
+    overflow: hidden;
+}
+
+/* Titre et noms */
+.container-title {
+    position: absolute;
+    top: 5px;
+    width: 100%;
+    color: white;
+    text-align: center;
+    z-index: 1;
+}
+
+.container-title .title {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.container-title .names {
+    font-size: 0.8em;
+    border-radius: 0;
+}
+
+/* Image */
+.element:hover {
+    border: 2px solid #57606f;
+}
+
+/* Chargement des images */
+.wait {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 1;
+}
+
+/* Menu du bas avec les boutons */
+.menu {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Button pour choisir la forme */
+.btn-forme {
+    margin-bottom: 10px;
+}
+
+.btn-forme > button {
+    color: white;
+    background-color: rgba(0,255,255,0.5);
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-forme > button:focus {
+    box-shadow: none;
+}
+
+.btn-forme > button:hover, .btn-forme > button.active {
+    color: #57606f;
+    background-color: rgb(0,255,255);
+    outline: none;
+    box-shadow: none;
+}
+
+.btn-dossier .active {
+    font-weight: bold;
+}

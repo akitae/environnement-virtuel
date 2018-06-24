@@ -1,45 +1,56 @@
-<canvas id="canvas"></canvas>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Environnement Virtuel</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+        <link rel="stylesheet" href="css/style.css"/>
+    </head>
 
-<!-- vertex shader -->
-<script id="3d-vertex-shader" type="x-shader/x-vertex">
-attribute vec4 a_position;
-attribute vec2 a_texcoord;
+    <body>
+        <div class="container-title">
+            <div class="title">Environnement Virtuel</div>
+            <div class="names btn btn-info">Noémie LEITAO / Anthony ZADIKIAN / Clément DAS NEVES / Florian LEPHORE</div>
+        </div>
 
-uniform mat4 u_matrix;
+        <div id="container"></div>
+        <div id="wait" class="wait d-block">
+            <div class="alert alert-primary" role="alert">
+                <strong>Chargement des images...</strong>
+                <div class="progress">
+                    <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                </div>
+            </div>
 
-varying vec2 v_texcoord;
+        </div>
 
-void main() {
-  // Multiply the position by the matrix.
-  gl_Position = u_matrix * a_position;
+        <div id="menu" class="menu">
 
-  // Pass the texcoord to the fragment shader.
-  v_texcoord = a_texcoord;
-}
-</script>
-<!-- fragment shader -->
-<script id="3d-fragment-shader" type="x-shader/x-fragment">
-precision mediump float;
+            <div id="btn-forme" class="btn-forme">
+                <button id="sphere" class="btn active">Sphère</button>
+                <button id="helix" class="btn">Chemin</button>
+                <button id="grid" class="btn">Tableau</button>
+            </div>
 
-// Passed in from the vertex shader.
-varying vec2 v_texcoord;
+            <!-- Sélection du répertoire d'image -->
+            <div class="btn-group btn-group-toggle btn-dossier" data-toggle="buttons">
+                <label class="btn btn-secondary active"><input type="radio" name="image" value="KTD" checked>KTD</label>
+                <label class="btn btn-secondary"><input type="radio" name="image" value="SUD">SUD</label>
+                <label class="btn btn-secondary"><input type="radio" name="image" value="TOU">TOU</label>
+            </div>
 
-// The texture.
-uniform sampler2D u_texture;
+        </div>
 
-void main() {
-   gl_FragColor = texture2D(u_texture, v_texcoord);
-}
-</script>
-<!--
-for most samples webgl-utils only provides shader compiling/linking and
-canvas resizing because why clutter the examples with code that's the same in every sample.
-See http://webglfundamentals.org/webgl/lessons/webgl-boilerplate.html
-and http://webglfundamentals.org/webgl/lessons/webgl-resizing-the-canvas.html
-for webgl-utils, m3, m4, and webgl-lessons-ui.
--->
-<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
-<script src="https://webglfundamentals.org/webgl/resources/webgl-lessons-helper.js"></script>
-<!-- you can and should delete this script. it is only used on the site to help with errors -->
-<script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
-<script src="cube.js"></script>
+        <script type="text/javascript" src="js/three.js"></script>
+        <!-- Animations -->
+        <script type="text/javascript" src="js/tween.min.js"></script>
+        <script type="text/javascript" src="js/TrackballControls.js"></script>
+        <script type="text/javascript" src="js/CSS3DRenderer.js"></script>
+
+        <script type="text/javascript" src="js/jquery/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="script.js"></script>
+
+    </body>
+</html>
