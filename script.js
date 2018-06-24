@@ -102,7 +102,7 @@ $(function () {
                         console.log("filename : ",filename );
                         console.log("pathName : ",this.pathname);
                         console.log(" Le ficher: ",this.href);
-                        console.log(" url: ",this.pathname.substring(url.lastIndexOf('/')+1));
+                        console.log(" url: ",this.pathname.lastIndexOf('/')+1);
 
                         tableImagePath.push(filename);
                         nbImage++;
