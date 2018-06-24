@@ -99,6 +99,7 @@ $(function () {
                     $(data).find("a:contains("+extension+")").each(function () {
                         let filename = directory+this.pathname;
                         console.log("filename : ",filename );
+                        console.log("pathName : ",this.pathname);
                         tableImagePath.push(filename);
                         nbImage++;
                     });
