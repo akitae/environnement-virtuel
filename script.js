@@ -98,11 +98,12 @@ $(function () {
                 extensions.forEach(function (extension) {
                     console.log("data : ",data);
                     $(data).find("a:contains("+extension+")").each(function () {
-                        let filename = directory+this.pathname;
+                        let arrayString =this.pathname.split('/');
+                        let filename = directory+arrayString[arrayString.length-1];
                         console.log("filename : ",filename );
                         console.log("pathName : ",this.pathname);
                         console.log(" Le ficher: ",this.href);
-                        var arrayString =this.pathname.split('/');
+
 
                         console.log(" url: ",arrayString[arrayString.length-1]);
 
