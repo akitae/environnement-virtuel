@@ -101,6 +101,7 @@ $(function () {
                         let filename = directory+this.pathname;
                         console.log("filename : ",filename );
                         console.log("pathName : ",this.pathname);
+                        console.log(" Le ficher: ",this.href);
 
                         tableImagePath.push(filename);
                         nbImage++;
