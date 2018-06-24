@@ -99,7 +99,7 @@ $(function () {
                     console.log("data : ",data);
                     $(data).find("a:contains("+extension+")").each(function () {
                         let arrayString =this.pathname.split('/');
-                        let filename = directory+arrayString[arrayString.length-1];
+                        let filename = directory+'/'+arrayString[arrayString.length-1];
                         console.log("filename : ",filename );
                         console.log("pathName : ",this.pathname);
                         console.log(" Le ficher: ",this.href);
